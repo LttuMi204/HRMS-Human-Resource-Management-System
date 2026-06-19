@@ -1,0 +1,222 @@
+/* Toàn bộ style dựa trên Design System của HRMS */
+body {
+    background-color: #F0F2F5;
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 16rem;
+    flex-shrink: 0;
+    background-color: #001529;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.sidebar-header { padding: 1.25rem; border-bottom: 1px solid #1e2a3a; }
+.sidebar-nav { flex: 1; padding: 1.5rem 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+.sidebar-nav .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.375rem; color: #d1d5db; transition: background 0.2s; cursor: pointer; }
+.sidebar-nav .nav-item:hover { background-color: #1e2a3a; color: white; }
+.sidebar-nav .nav-item.active { background-color: #1677FF; color: white; }
+.sidebar-footer { padding: 1rem; border-top: 1px solid #1e2a3a; font-size: 0.875rem; }
+.sidebar-nav::-webkit-scrollbar { width: 4px; }
+.sidebar-nav::-webkit-scrollbar-track { background: #1E2A3A; }
+.sidebar-nav::-webkit-scrollbar-thumb { background: #4a627a; border-radius: 4px; }
+
+/* Header chung */
+.header-bar {
+    background-color: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding: 1rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+/* Thẻ tóm tắt */
+.card-hover:hover { box-shadow: 0 8px 20px rgba(0,0,0,0.08); transition: box-shadow 0.2s ease; }
+
+/* Bảng dữ liệu */
+.data-table tbody tr:nth-child(even) { background-color: #FAFAFA; }
+.data-table tbody tr:hover { background-color: #E6F7FF; }
+
+/* Badge */
+.badge-warning { background-color: rgba(250,173,20,0.1); color: #FAAD14; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.badge-success { background-color: rgba(82,196,26,0.1); color: #52C41A; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.badge-danger { background-color: rgba(245,34,45,0.1); color: #F5222D; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+.badge-info { background-color: rgba(22,119,255,0.1); color: #1677FF; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px; }
+
+/* Buttons */
+.btn-primary { background-color: #1677FF; color: white; padding: 6px 16px; border-radius: 6px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; }
+.btn-primary:hover { background-color: #4096FF; }
+.btn-primary:disabled { background-color: #d9d9d9; cursor: not-allowed; }
+
+.btn-default { background-color: white; border: 1px solid #d9d9d9; color: #262626; padding: 6px 16px; border-radius: 6px; transition: all 0.2s; cursor: pointer; background: white; }
+.btn-default:hover { border-color: #1677FF; color: #1677FF; }
+
+.btn-danger { background-color: #F5222D; color: white; padding: 6px 16px; border-radius: 6px; font-weight: 500; transition: background 0.2s; border: none; cursor: pointer; }
+.btn-danger:hover { background-color: #ff4d4f; }
+
+.btn-outline { background: transparent; border: 1px solid #1677FF; color: #1677FF; padding: 6px 16px; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+.btn-outline:hover { background: #1677FF; color: white; }
+
+.link-view-all { color: #1677FF; font-size: 13px; font-weight: 500; text-decoration: none; }
+.link-view-all:hover { color: #4096FF; text-decoration: underline; }
+
+/* Typography */
+h1 { font-size: 24px; font-weight: 600; color: #262626; }
+h2 { font-size: 20px; font-weight: 500; color: #262626; }
+.text-body { font-size: 14px; color: #595959; }
+.text-small { font-size: 12px; color: #8c8c8c; }
+.table-header { font-size: 13px; font-weight: 700; color: #262626; }
+
+/* Skeleton loading */
+.skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 4px; }
+@keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+/* Modal overlay */
+.modal-overlay { background-color: rgba(0,0,0,0.45); backdrop-filter: blur(2px); }
+
+/* ==================== SMART BUTTONS (Hình 3.2) ==================== */
+.smart-buttons { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; }
+.smart-card { background: white; border-radius: 12px; border: 1px solid #e8e8e8; padding: 1rem 1.25rem; flex: 1 1 130px; text-align: center; transition: all 0.2s; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+.smart-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); transform: translateY(-2px); border-color: #1677FF; }
+.smart-card .count { font-size: 28px; font-weight: 700; line-height: 1.2; }
+.smart-card .label { font-size: 12px; color: #8c8c8c; margin-top: 6px; }
+.smart-card .unit { font-size: 10px; color: #bfbfbf; margin-top: 2px; }
+
+/* ==================== TABS PROFILE ==================== */
+.profile-tabs { border-bottom: 1px solid #e8e8e8; margin-top: 1rem; }
+.tab-buttons { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+.tab-btn { padding: 0.5rem 0; font-size: 14px; font-weight: 500; color: #595959; border-bottom: 2px solid transparent; cursor: pointer; transition: all 0.2s; }
+.tab-btn.active { color: #1677FF; border-bottom-color: #1677FF; }
+.tab-content { padding: 1.5rem 0; }
+
+/* Form */
+.form-row { margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+.form-field { flex: 1; min-width: 200px; }
+.form-field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #262626; }
+.form-field input, .form-field select, .form-field textarea { width: 100%; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 14px; transition: all 0.2s; }
+.form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #1677FF; box-shadow: 0 0 0 2px rgba(22,119,255,0.2); }
+.form-field input:disabled { background-color: #f5f5f5; color: #bfbfbf; cursor: not-allowed; }
+.edit-mode-btn { margin-top: 1rem; text-align: right; }
+
+/* ==================== EQUIPMENT (Hình 3.9) ==================== */
+.equipment-item { background: white; border-radius: 12px; transition: all 0.2s; }
+.equipment-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+
+/* ==================== CARS (Hình 3.12) ==================== */
+.car-item { border-left: 3px solid #1677FF; transition: all 0.2s; background: white; }
+.car-item:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+.car-item-warning { border-left-color: #FAAD14; background: #FFFBE6; }
+.car-item-danger { border-left-color: #F5222D; background: #FFF1F0; }
+
+/* ==================== PLANNING CALENDAR (Hình 3.11) ==================== */
+.planning-calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 12px; }
+.planning-day { background: white; border-radius: 12px; padding: 12px 8px; text-align: center; border: 1px solid #e8e8e8; cursor: pointer; transition: all 0.2s; }
+.planning-day:hover { border-color: #1677FF; transform: translateY(-2px); box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.planning-day.office { background: #E6F7FF; border-color: #1677FF; }
+.planning-day.remote { background: #F6FFED; border-color: #52C41A; }
+.planning-day.hybrid { background: #FFF7E6; border-color: #FAAD14; }
+.planning-day.leave { background: #F5F5F5; border-color: #D9D9D9; opacity: 0.7; }
+
+/* ==================== TIMESHEET (Hình 3.14) ==================== */
+.timesheet-row { display: flex; gap: 12px; align-items: center; padding: 12px; background: #FAFAFA; border-radius: 8px; margin-bottom: 8px; }
+
+/* ==================== DATA GRID (Audit) ==================== */
+.data-grid { width: 100%; border-collapse: collapse; }
+.data-grid th, .data-grid td { padding: 12px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+.data-grid th { background-color: #FAFAFA; font-weight: 600; font-size: 13px; color: #262626; }
+.data-grid tr:hover { background-color: #E6F7FF; }
+.audit-row-corrupted { background-color: #FFF1F0 !important; }
+
+/* Pagination */
+.pagination { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+.pagination button { padding: 4px 10px; border: 1px solid #d9d9d9; background: white; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+.pagination button:hover { border-color: #1677FF; color: #1677FF; }
+.pagination button.active { background: #1677FF; color: white; border-color: #1677FF; }
+.pagination button:disabled { cursor: not-allowed; opacity: 0.5; }
+
+/* Filter bar */
+.filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end; }
+.filter-item { display: flex; flex-direction: column; gap: 4px; }
+.filter-item label { font-size: 12px; font-weight: 500; color: #595959; }
+.filter-item input, .filter-item select { border: 1px solid #d9d9d9; border-radius: 6px; padding: 6px 10px; font-size: 14px; transition: all 0.2s; }
+.filter-item input:focus, .filter-item select:focus { outline: none; border-color: #1677FF; box-shadow: 0 0 0 2px rgba(22,119,255,0.2); }
+
+/* ==================== RESPONSIVE ==================== */
+/* Thay thế media query hiện tại */
+@media (max-width: 768px) {
+    .sidebar { width: 4rem; }
+    .sidebar-header span, .sidebar-nav span, .sidebar-footer div:last-child { display: none; }
+    .sidebar-header { justify-content: center; }
+    .sidebar-nav .nav-item { justify-content: center; }
+    .sidebar-nav .nav-item i { margin: 0; }
+    
+    /* Cải thiện smart buttons */
+    .smart-buttons { 
+        flex-direction: column; 
+        gap: 0.75rem;
+    }
+    .smart-card { 
+        display: flex; 
+        align-items: center; 
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        flex: 1 1 auto;
+    }
+    .smart-card .count { font-size: 24px; }
+    .smart-card .label { margin-top: 0; font-size: 14px; }
+    .smart-card .unit { display: inline; margin-left: 8px; }
+    
+    /* Grid cải thiện */
+    .planning-calendar { gap: 4px; }
+    .planning-day { padding: 6px 2px; }
+    .planning-day div { font-size: 10px; }
+    
+    .header-bar { flex-direction: column; gap: 0.5rem; align-items: flex-start; }
+    .filter-bar { flex-direction: column; align-items: stretch; }
+    .tab-buttons { gap: 0.75rem; flex-wrap: wrap; }
+    .tab-btn { font-size: 12px; }
+    
+    /* Modal full màn hình */
+    .modal-overlay .bg-white { width: 95%; margin: 0 auto; max-height: 90vh; overflow-y: auto; }
+}
+
+/* ==================== ANIMATIONS ==================== */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in { animation: fadeIn 0.3s ease forwards; }
+
+/* Scrollbar cho main content */
+.main-content::-webkit-scrollbar { width: 6px; }
+.main-content::-webkit-scrollbar-track { background: #f0f0f0; border-radius: 3px; }
+.main-content::-webkit-scrollbar-thumb { background: #c0c0c0; border-radius: 3px; }
+.main-content::-webkit-scrollbar-thumb:hover { background: #a0a0a0; }
+/* Tooltip */
+.smart-card {
+    position: relative;
+}
+.smart-card:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #262626;
+    color: white;
+    font-size: 12px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    z-index: 20;
+    margin-bottom: 8px;
+}

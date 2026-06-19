@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>HRMS | Nhân sự Phúc Lam Phương</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <style>
+        /* Toàn bộ style dựa trên Design System của HRMS */
+        body {
+            background-color: #F0F2F5;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 16rem;
+            flex-shrink: 0;
+            background-color: #001529;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        .sidebar-header { padding: 1.25rem; border-bottom: 1px solid #1e2a3a; }
+        .sidebar-nav { flex: 1; padding: 1.5rem 1rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.5rem; }
+        .sidebar-nav .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; border-radius: 0.375rem; color: #d1d5db; transition: background 0.2s; cursor: pointer; }
+        .sidebar-nav .nav-item:hover { background-color: #1e2a3a; color: white; }
+        .sidebar-nav .nav-item.active { background-color: #1677FF; color: white; }
+        .sidebar-footer { padding: 1rem; border-top: 1px solid #1e2a3a; font-size: 0.875rem; }
+
+        /* Header chung */
+        .header-bar {
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Smart Buttons */
+        .smart-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .smart-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e8e8e8;
+            padding: 1rem 1.25rem;
+            flex: 1 1 130px;
+            text-align: center;
+            transition: all 0.2s;
+            cursor: pointer;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        }
+        .smart-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            transform: translateY(-2px);
+            border-color: #1677FF;
+        }
+        .smart-card .count {
+            font-size: 28px;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        .smart-card .label {
+            font-size: 12px;
+            color: #8c8c8c;
+            margin-top: 6px;
+        }
+        .smart-card .unit {
+            font-size: 10px;
+            color: #bfbfbf;
+            margin-top: 2px;
+        }
+
+        /* Badge status */
+        .badge-success { background-color: #f6ffed; color: #52c41a; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-warning { background-color: #fff7e6; color: #faad14; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-danger { background-color: #fff1f0; color: #ff4d4f; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 500; display: inline-flex; align-items: center; gap: 4px; }
+        .badge-info { background-color: #e6f7ff; color: #1677ff; border-radius: 12px; padding: 2px 8px; font-size: 12px; font-weight: 500; }
+
+        /* Buttons */
+        .btn-primary { background-color: #1677FF; color: white; padding: 6px 16px; border-radius: 6px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-primary:hover { background-color: #4096FF; }
+        .btn-default { background-color: white; border: 1px solid #d9d9d9; color: #262626; padding: 6px 16px; border-radius: 6px; transition: all 0.2s; cursor: pointer; }
+        .btn-default:hover { border-color: #1677FF; color: #1677FF; }
+        .btn-danger { background-color: #ff4d4f; color: white; padding: 6px 16px; border-radius: 6px; font-weight: 500; transition: all 0.2s; border: none; cursor: pointer; }
+        .btn-danger:hover { background-color: #ff7875; }
+        .btn-outline { background: transparent; border: 1px solid #1677FF; color: #1677FF; padding: 6px 16px; border-radius: 6px; cursor: pointer; }
+        .btn-outline:hover { background: #1677FF; color: white; }
+
+        /* Modal */
+        .modal-overlay { background-color: rgba(0,0,0,0.45); backdrop-filter: blur(2px); }
+        
+        /* Equipment card */
+        .equipment-item {
+            background: #fafafa;
+            border-radius: 8px;
+            padding: 12px;
+            transition: all 0.2s;
+        }
+        .equipment-item:hover { background: #f0f0f0; }
+        
+        /* Car item */
+        .car-item {
+            border-left: 3px solid #1677FF;
+            transition: all 0.2s;
+        }
+        .car-item-warning { border-left-color: #faad14; background: #fffbe6; }
+        .car-item-danger { border-left-color: #ff4d4f; background: #fff1f0; }
+        
+        /* Planning calendar */
+        .planning-calendar {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+        .planning-day {
+            background: white;
+            border-radius: 8px;
+            padding: 12px 8px;
+            text-align: center;
+            border: 1px solid #e8e8e8;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .planning-day:hover { border-color: #1677FF; transform: translateY(-2px); }
+        .planning-day.office { background: #e6f7ff; border-color: #1677FF; }
+        .planning-day.remote { background: #f6ffed; border-color: #52c41a; }
+        .planning-day.hybrid { background: #fff7e6; border-color: #faad14; }
+        .planning-day.leave { background: #f5f5f5; border-color: #d9d9d9; opacity: 0.7; }
+        
+        /* Timesheet form */
+        .timesheet-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 12px;
+            background: #fafafa;
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+        
+        /* Tabs */
+        .profile-tabs { border-bottom: 1px solid #e8e8e8; margin-top: 1rem; }
+        .tab-buttons { display: flex; gap: 1.5rem; }
+        .tab-btn { padding: 0.5rem 0; font-size: 14px; font-weight: 500; color: #595959; border-bottom: 2px solid transparent; cursor: pointer; }
+        .tab-btn.active { color: #1677FF; border-bottom-color: #1677FF; }
+        .tab-content { padding: 1.5rem 0; }
+        
+        /* Data grid */
+        .data-grid { width: 100%; border-collapse: collapse; }
+        .data-grid th, .data-grid td { padding: 12px 12px; text-align: left; border-bottom: 1px solid #f0f0f0; }
+        .data-grid th { background-color: #FAFAFA; font-weight: 600; font-size: 13px; }
+        .data-grid tr:hover { background-color: #E6F7FF; }
+        
+        /* Pagination */
+        .pagination { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
+        .pagination button { padding: 4px 10px; border: 1px solid #d9d9d9; background: white; border-radius: 4px; cursor: pointer; }
+        .pagination button.active { background: #1677FF; color: white; border-color: #1677FF; }
+        
+        /* Filter bar */
+        .filter-bar { display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-end; }
+        .filter-item { display: flex; flex-direction: column; gap: 4px; }
+        .filter-item label { font-size: 12px; font-weight: 500; }
+        .filter-item input, .filter-item select { border: 1px solid #d9d9d9; border-radius: 6px; padding: 6px 10px; font-size: 14px; }
+        
+        /* Form row */
+        .form-row { margin-bottom: 1rem; display: flex; flex-wrap: wrap; gap: 1rem; }
+        .form-field { flex: 1; min-width: 200px; }
+        .form-field label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 4px; color: #262626; }
+        .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 6px 12px; border: 1px solid #d9d9d9; border-radius: 6px; font-size: 14px; }
+        .form-field input:focus, .form-field select:focus, .form-field textarea:focus { outline: none; border-color: #1677FF; box-shadow: 0 0 0 2px rgba(22,119,255,0.2); }
+        
+        /* Animation */
+        .skeleton { background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%); background-size: 200% 100%; animation: loading 1.5s infinite; border-radius: 4px; }
+        @keyframes loading { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+    </style>
+</head>
+<body>
+<div class="flex h-screen overflow-hidden">
+    <!-- Sidebar trái -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-users text-[#1677FF] text-2xl"></i>
+                <span class="font-bold text-lg tracking-wide">HRMS</span>
+            </div>
+            <p class="text-xs text-gray-400 mt-1">Phúc Lam Phương</p>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" data-view="dashboard" class="nav-item active"><i class="fas fa-tachometer-alt w-5"></i> <span>Bảng điều khiển</span></a>
+            <a href="#" data-view="employee" class="nav-item"><i class="fas fa-user-circle w-5"></i> <span>Hồ sơ nhân viên</span></a>
+            <a href="#" data-view="timeoff" class="nav-item"><i class="fas fa-calendar-alt w-5"></i> <span>Nghỉ phép</span></a>
+            <a href="#" data-view="planning" class="nav-item"><i class="fas fa-calendar-week w-5"></i> <span>Planning</span></a>
+            <a href="#" data-view="cars" class="nav-item"><i class="fas fa-car w-5"></i> <span>Phương tiện</span></a>
+            <a href="#" data-view="equipment" class="nav-item"><i class="fas fa-laptop w-5"></i> <span>Thiết bị</span></a>
+            <a href="#" data-view="documents" class="nav-item"><i class="fas fa-file-signature w-5"></i> <span>Ký số</span></a>
+            <a href="#" data-view="contracts" class="nav-item"><i class="fas fa-file-contract w-5"></i> <span>Hợp đồng</span></a>
+            <a href="#" data-view="courses" class="nav-item"><i class="fas fa-book-open w-5"></i> <span>Đào tạo</span></a>
+            <a href="#" data-view="timesheets" class="nav-item"><i class="fas fa-clock w-5"></i> <span>Timesheets</span></a>
+            <a href="#" data-view="appraisal" class="nav-item"><i class="fas fa-chart-line w-5"></i> <span>Đánh giá</span></a>
+            <a href="#" data-view="orgchart" class="nav-item"><i class="fas fa-sitemap w-5"></i> <span>Sơ đồ tổ chức</span></a>
+            <a href="#" data-view="holidays" class="nav-item"><i class="fas fa-calendar-alt w-5"></i> <span>Ngày lễ</span></a>
+            <div class="pt-4 mt-4 border-t border-[#1e2a3a]">
+                <p class="text-xs text-gray-500 px-3 mb-2">QUẢN TRỊ</p>
+                <a href="#" data-view="audit" class="nav-item"><i class="fas fa-history w-5"></i> <span>Nhật ký kiểm toán</span></a>
+                <a href="#" data-view="config" class="nav-item"><i class="fas fa-user-cog w-5"></i> <span>Cấu hình</span></a>
+            </div>
+        </nav>
+        <div class="sidebar-footer">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-full bg-[#1677FF] flex items-center justify-center"><i class="fas fa-user-md text-sm"></i></div>
+                <div>
+                    <p class="font-medium" id="userRoleDisplay">HR Admin</p>
+                    <p class="text-xs text-gray-400">hradmin@plpsoft.com.vn</p>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Nội dung chính -->
+    <main class="flex-1 overflow-y-auto main-content">
+        <div id="appContent"></div>
+    </main>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+
+<!-- Modal Tạo đơn nghỉ phép (UI-TIME-01) - Hình 3.6 -->
+<div id="createLeaveModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
+        <button id="closeCreateModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Tạo đơn xin nghỉ phép</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Loại nghỉ <span class="text-red-500">*</span></label>
+                <select id="leaveType" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Phép năm</option><option>Ốm</option><option>Việc riêng</option><option>Không lương</option>
+                </select>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-sm font-medium mb-1">Ngày bắt đầu <span class="text-red-500">*</span></label>
+                    <input type="date" id="startDate" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+                <div><label class="block text-sm font-medium mb-1">Ngày kết thúc <span class="text-red-500">*</span></label>
+                    <input type="date" id="endDate" class="w-full border border-gray-300 rounded-md px-3 py-2"></div>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Lý do</label>
+                <textarea id="leaveReason" rows="3" maxlength="500" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Nhập lý do xin nghỉ..."></textarea>
+                <div class="text-right text-xs text-gray-400"><span id="reasonCounter">0</span>/500</div>
+            </div>
+            <div class="bg-gray-50 p-3 rounded-md flex justify-between items-center">
+                <span class="font-medium">Số ngày nghỉ (thực tế)</span>
+                <span id="calculatedDays" class="text-xl font-bold text-[#1677FF]">0</span>
+            </div>
+            <div id="leaveQuotaWarning" class="hidden bg-red-50 p-2 rounded text-red-600 text-sm"></div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelLeaveBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="submitLeaveBtn" class="btn-primary px-4 py-2">Gửi yêu cầu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Phê duyệt OTP (UI-TIME-02) -->
+<div id="approveModal" class="fixed inset-0 z-20 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Phê duyệt đơn nghỉ</h3>
+        <div id="modalLeaveInfo" class="text-sm text-gray-600 mb-4"></div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Mã OTP (6 số)</label>
+            <input type="text" id="otpInput" maxlength="6" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="000000">
+            <div class="flex justify-between items-center mt-1"><span id="timerDisplay" class="text-xs text-gray-500">30s</span><button id="resendOtpBtn" class="text-xs text-[#1677FF] hidden">Gửi lại mã</button></div>
+            <p class="text-xs text-gray-400 mt-1">Mã demo: 123456</p>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button id="modalRejectBtn" class="btn-danger px-4 py-2">Từ chối</button>
+            <button id="modalApproveBtn" class="btn-primary px-4 py-2">Xác nhận</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Từ chối (lý do) -->
+<div id="rejectReasonModal" class="fixed inset-0 z-40 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeRejectModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Từ chối đơn nghỉ</h3>
+        <div><label class="block text-sm font-medium mb-1">Lý do từ chối <span class="text-red-500">*</span></label>
+            <textarea id="rejectReason" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Nhập lý do từ chối..."></textarea>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelRejectBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="confirmRejectBtn" class="btn-danger px-4 py-2">Xác nhận từ chối</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Ký số tài liệu (UI-DOC-01) - Hình 3.10 -->
+<div id="signDocumentModal" class="fixed inset-0 z-50 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl p-6 relative flex flex-col max-h-[90vh]">
+        <button id="closeSignModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-2">Ký số tài liệu điện tử</h3>
+        <div id="docInfo" class="text-sm text-gray-600 mb-2"></div>
+        <div class="border rounded-md bg-gray-100 h-96 mb-4 overflow-auto">
+            <iframe id="pdfViewer" class="w-full h-full" src=""></iframe>
+        </div>
+        <div class="flex items-center gap-2 mb-4">
+            <input type="checkbox" id="confirmCheckbox"> 
+            <label class="text-sm">Tôi xác nhận đồng ý với nội dung tài liệu</label>
+        </div>
+        <div class="flex justify-end gap-3">
+            <button id="cancelSignBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="rejectSignBtn" class="btn-danger px-4 py-2">Từ chối</button>
+            <button id="approveSignBtn" class="btn-primary px-4 py-2" disabled>Ký số</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Thêm giờ làm (Timesheet) - Hình 3.14 -->
+<div id="addTimesheetModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeTimesheetModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Thêm giờ làm việc</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Ngày làm việc</label>
+                <input type="date" id="timesheetDate" class="w-full border border-gray-300 rounded-md px-3 py-2">
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Dự án</label>
+                <select id="timesheetProject" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>HRMS Development</option>
+                    <option>CRM Upgrade</option>
+                    <option>Internal Training</option>
+                    <option>Support & Maintenance</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Số giờ</label>
+                <input type="number" id="timesheetHours" step="0.5" min="0.5" max="12" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="VD: 8.0">
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Mô tả công việc</label>
+                <textarea id="timesheetDesc" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Mô tả chi tiết..."></textarea>
+            </div>
+            <div id="timesheetWarning" class="hidden bg-yellow-50 p-2 rounded text-yellow-700 text-sm"></div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelTimesheetBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="submitTimesheetBtn" class="btn-primary px-4 py-2">Lưu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Yêu cầu đánh giá (Appraisal) - Hình 3.13 -->
+<div id="addAppraisalModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeAppraisalModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Yêu cầu đánh giá hiệu suất</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Loại đánh giá</label>
+                <select id="appraisalType" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Định kỳ (Quý 2/2026)</option>
+                    <option>Đột xuất</option>
+                    <option>360-degree feedback</option>
+                    <option>Midterm Review</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Người đánh giá</label>
+                <select id="appraisalReviewer" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Quản lý trực tiếp</option>
+                    <option>Phòng Nhân sự</option>
+                    <option>Đồng nghiệp</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Mục tiêu đánh giá</label>
+                <textarea id="appraisalGoal" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Nhập mục tiêu cần đánh giá..."></textarea>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelAppraisalBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="submitAppraisalBtn" class="btn-primary px-4 py-2">Gửi yêu cầu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Đổi ca (Shift Swap) - FR09B -->
+<div id="swapShiftModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeSwapModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Yêu cầu đổi ca</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Chọn ca của bạn</label>
+                <select id="swapMyShift" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Ca sáng (08:00 - 12:00) - Thứ 2</option>
+                    <option>Ca chiều (13:00 - 17:00) - Thứ 2</option>
+                    <option>Ca sáng (08:00 - 12:00) - Thứ 3</option>
+                    <option>Ca chiều (13:00 - 17:00) - Thứ 3</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Chọn nhân viên đổi ca</label>
+                <select id="swapTargetEmployee" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Nguyễn Văn An - Kỹ thuật</option>
+                    <option>Trần Thị Bình - Kinh doanh</option>
+                    <option>Lê Văn Cường - Kỹ thuật</option>
+                    <option>Phạm Thị Dung - Nhân sự</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Chọn ca của người kia</label>
+                <select id="swapTargetShift" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Ca sáng (08:00 - 12:00) - Thứ 4</option>
+                    <option>Ca chiều (13:00 - 17:00) - Thứ 4</option>
+                    <option>Ca sáng (08:00 - 12:00) - Thứ 5</option>
+                    <option>Ca chiều (13:00 - 17:00) - Thứ 5</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Lý do</label>
+                <textarea id="swapReason" rows="2" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Nhập lý do đổi ca..."></textarea>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelSwapBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="submitSwapBtn" class="btn-primary px-4 py-2">Gửi yêu cầu</button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Báo hỏng thiết bị - Hình 3.9 -->
+<div id="reportEquipmentModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeEquipModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">Báo hỏng thiết bị</h3>
+        <div class="space-y-4">
+            <div><label class="block text-sm font-medium mb-1">Thiết bị</label>
+                <select id="equipmentSelect" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option>Laptop Dell Latitude 5540 (SN001)</option>
+                    <option>Monitor LG 24 inch (SN002)</option>
+                    <option>Bàn phím Keychron K2 (SN003)</option>
+                </select>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Mô tả sự cố</label>
+                <textarea id="equipmentIssue" rows="3" class="w-full border border-gray-300 rounded-md px-3 py-2" placeholder="Mô tả chi tiết vấn đề..."></textarea>
+            </div>
+            <div><label class="block text-sm font-medium mb-1">Mức độ ưu tiên</label>
+                <select id="equipmentPriority" class="w-full border border-gray-300 rounded-md px-3 py-2">
+                    <option value="1">Cao - Ảnh hưởng công việc ngay</option>
+                    <option value="2" selected>Trung bình - Có thể làm việc tạm</option>
+                    <option value="3">Thấp - Không ảnh hưởng nhiều</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex justify-end gap-3 mt-6">
+            <button id="cancelEquipReportBtn" class="btn-default px-4 py-2">Hủy</button>
+            <button id="submitEquipReportBtn" class="btn-danger px-4 py-2">Gửi báo hỏng</button>
+        </div>
+    </div>
+</div>
+<!-- Modal Thông báo -->
+<div id="notificationModal" class="fixed inset-0 z-30 hidden items-center justify-center modal-overlay">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6 relative">
+        <button id="closeNotiModalBtn" class="absolute top-3 right-3 text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+        <h3 class="text-lg font-medium mb-4">📢 Thông báo</h3>
+        <div id="notificationList" class="space-y-3 max-h-96 overflow-y-auto">
+            <div class="p-3 bg-blue-50 rounded border-l-4 border-blue-500">
+                <p class="text-sm font-medium">Có 2 đơn nghỉ phép chờ duyệt</p>
+                <p class="text-xs text-gray-500">2 phút trước</p>
+            </div>
+            <div class="p-3 bg-yellow-50 rounded border-l-4 border-yellow-500">
+                <p class="text-sm font-medium">Hợp đồng của Nguyễn Văn An sắp hết hạn (30 ngày)</p>
+                <p class="text-xs text-gray-500">Hôm qua</p>
+            </div>
+        </div>
+        <div class="mt-4 flex justify-end">
+            <button id="markAllReadBtn" class="btn-default text-sm">Đánh dấu đã đọc</button>
+        </div>
+    </div>
+</div>
+<script src="hrms.js"></script>
+</body>
+</html>
