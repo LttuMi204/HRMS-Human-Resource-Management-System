@@ -44,31 +44,31 @@ https://lttumi204.github.io/HRMS-Human-Resource-Management-System/
 
 
 
-\* Authentication \& Authorization (JWT, RBAC)
+Authentication \& Authorization (JWT, RBAC)
 
-\* Employee Profile Management
+Employee Profile Management
 
-\* Organization Structure Management
+Organization Structure Management
 
-\* Labor Contract Management
+Labor Contract Management
 
-\* Leave Request \& Approval Workflow
+Leave Request \& Approval Workflow
 
-\* Timesheet Management
+Timesheet Management
 
-\* Training \& Skills Tracking
+Training \& Skills Tracking
 
-\* Performance Evaluation
+Performance Evaluation
 
-\* Asset \& Equipment Management
+Asset \& Equipment Management
 
-\* Electronic Document Signing
+Electronic Document Signing
 
-\* Fleet Management
+Fleet Management
 
-\* Shift Planning \& Shift Swap
+Shift Planning \& Shift Swap
 
-\* Audit Logging \& Dashboard
+Audit Logging \& Dashboard
 
 
 
@@ -96,19 +96,19 @@ https://lttumi204.github.io/HRMS-Human-Resource-Management-System/
 
 
 
-\* HTML
+HTML
 
-\* CSS
+CSS
 
-\* JavaScript
+JavaScript
 
-\* UML
+UML
 
-\* ERD
+ERD
 
-\* DFD
+DFD
 
-\* Software Engineering Documentation
+Software Engineering Documentation
 
 
 
